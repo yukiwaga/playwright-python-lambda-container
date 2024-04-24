@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Playwrightのための動的なサンプルページ</title>
+    <script>
+      document.addEventListener("DOMContentLoaded", (e) => {
+        const header = document.createElement("h1");
+        header.id = "target";
+        header.appendChild(document.createTextNode("Scraping Test"));
+        const body = document.getElementsByTagName("body")[0];
+        body.insertBefore(header, body.firstChild);
+      });
+    </script>
+  </head>
+  <body>
+    <p>
+      Playwrightによる動的なページのスクレイピングをテストするためのページです。
+      <code>id</code
+      >属性が<code>"target"</code>である<code>&lt;h1&gt;</code>タグを
+      Javascriptにより動的に追加し、そのテキストをスクレイピングします。
+    </p>
+  </body>
+</html>
