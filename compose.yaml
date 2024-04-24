@@ -1,0 +1,17 @@
+# NOTE:
+# playwright-python-lambdaイメージのためのビルド専用のcompose.yamlです。
+# `docker compose build` でイメージをビルドできます。
+# `docker compose up` 等でコンテナを起動することはできません。
+services:
+  for_dev:
+    build:
+      context: ./docker
+      target: runner-with-rie
+    image: playwright-python-lambda:local
+    entrypoint: []
+  for_prod:
+    build:
+      context: ./docker
+      target: runner
+    image: playwright-python-lambda:aws
+    entrypoint: []
