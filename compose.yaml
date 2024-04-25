@@ -1,17 +1,53 @@
-# NOTE:
-# playwright-python-lambdaイメージのためのビルド専用のcompose.yamlです。
-# `docker compose build` でイメージをビルドできます。
-# `docker compose up` 等でコンテナを起動することはできません。
 services:
+  # build_prod: イメージビルド用のプロファイル
   for_dev:
     build:
       context: ./docker
       target: runner-with-rie
     image: playwright-python-lambda:local
     entrypoint: []
+    profiles:
+      - build_prod
   for_prod:
     build:
       context: ./docker
       target: runner
     image: playwright-python-lambda:aws
     entrypoint: []
+    profiles:
+      - build_prod
+  
+  # ビルドしたイメージのテスト用のサービス
+  test:
+    build:
+      context: ./tests/test_playwright-python-lambda
+    volumes:
+      - type: bind
+        source: ./tests/pytests
+        target: /tests
+    depends_on:
+      lambda:
+        condition: service_healthy
+      nginx:
+        condition: service_healthy
+  lambda:
+    build:
+      context: ./tests/example_lambda
+  nginx:
+    image: nginx:stable-alpine-slim
+    volumes:
+      - type: bind
+        source: ./tests/example.html
+        target: /usr/share/nginx/html/example.html
+        read_only: true
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -O /dev/null http://nginx/example.html || exit 1"
+        ]
+      interval: 30s
+      timeout: 3s
+      start_period: 30s
+      start_interval: 5s
+      retries: 3
