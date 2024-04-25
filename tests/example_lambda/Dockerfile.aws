@@ -1,0 +1,5 @@
+# AWS Lambda上で動作するexample_lambdaコンテナイメージ
+FROM playwright-python-lambda:aws
+WORKDIR /function
+COPY example_lambda.py ./
+CMD ["example_lambda.example_handler"]

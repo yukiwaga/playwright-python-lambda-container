@@ -41,6 +41,16 @@ RUN playwright install-deps chromium \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR "${FUNCTION_DIR}"
+ENV PWPYLAMBDA_CHROMIUM_ARGS="\
+--autoplay-policy=user-gesture-required \
+--disable-domain-reliability \
+--disable-notifications \
+--disable-print-preview \
+--disable-speech-api \
+--disk-cache-size=33554432 \
+--mute-audio \
+--no-pings \
+--single-process"
 ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
 
 #
