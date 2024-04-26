@@ -7,7 +7,7 @@ services:
     image: playwright-python-lambda:local
     entrypoint: []
     profiles:
-      - build_prod
+      - build
   for_prod:
     build:
       context: ./docker
@@ -15,7 +15,7 @@ services:
     image: playwright-python-lambda:aws
     entrypoint: []
     profiles:
-      - build_prod
+      - build
   
   # ビルドしたイメージのテスト用のサービス
   test:
@@ -30,9 +30,13 @@ services:
         condition: service_healthy
       nginx:
         condition: service_healthy
+    profiles:
+      - test
   lambda:
     build:
       context: ./tests/example_lambda
+    profiles:
+      - test
   nginx:
     image: nginx:stable-alpine-slim
     volumes:
@@ -51,3 +55,5 @@ services:
       start_period: 30s
       start_interval: 5s
       retries: 3
+    profiles:
+      - test
